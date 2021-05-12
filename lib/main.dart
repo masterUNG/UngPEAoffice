@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ungpeaofficer/states/authen.dart';
 import 'package:ungpeaofficer/states/my_service.dart';
 
@@ -9,9 +10,17 @@ final Map<String, WidgetBuilder> map = {
 
 String initialRoute;
 
-void main() {
-  initialRoute = '/authen';
-  runApp(MyApp());
+Future<Null> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  SharedPreferences preferences = await SharedPreferences.getInstance();
+  String employedid = preferences.getString('emyloyedid');
+  if (employedid == null) {
+    initialRoute = '/authen';
+    runApp(MyApp());
+  } else {
+    initialRoute = '/myService';
+    runApp(MyApp());
+  }
 }
 
 class MyApp extends StatelessWidget {
@@ -20,7 +29,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       routes: map,
       initialRoute: initialRoute,
-      theme: ThemeData(primarySwatch: Colors.pink),
+      theme: ThemeData(primarySwatch: Colors.purple),
     );
   }
 }

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ungpeaofficer/models/user_model.dart';
 import 'package:ungpeaofficer/utility/dialog.dart';
 import 'package:ungpeaofficer/utility/my_constant.dart';
@@ -66,7 +67,7 @@ class _AuthenState extends State<Authen> {
     String api =
         '${MyConstant.domain}/boyproj/getUserWhereUser.php?isAdd=true&user=$user';
     await Dio().get(api).then(
-      (value) {
+      (value) async {
         print('### value => $value');
         if (value.toString() == 'null') {
           normalDialog(context, 'User False !!!', 'No $user in my Database');
@@ -74,14 +75,16 @@ class _AuthenState extends State<Authen> {
           for (var item in json.decode(value.data)) {
             UserModel model = UserModel.fromMap(item);
             if (password == model.password) {
-
+              print('### Remember $remember');
               if (remember) {
-                
+                SharedPreferences preferences =
+                    await SharedPreferences.getInstance();
+                preferences.setString('name', model.name);
+                preferences.setString('emyloyedid', model.employedid);
+                routeToService();
               } else {
                 routeToService();
               }
-
-              
             } else {
               normalDialog(context, 'Password False !!!',
                   'Please Try Again Passwrod False');
@@ -93,8 +96,7 @@ class _AuthenState extends State<Authen> {
   }
 
   void routeToService() {
-    Navigator.pushNamedAndRemoveUntil(
-        context, '/myService', (route) => false);
+    Navigator.pushNamedAndRemoveUntil(context, '/myService', (route) => false);
   }
 
   Container buildRemember() {

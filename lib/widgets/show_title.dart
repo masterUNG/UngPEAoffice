@@ -22,12 +22,19 @@ class ShowTitle extends StatelessWidget {
         fontWeight: FontWeight.normal,
       );
 
+  TextStyle h4Style() => TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.w700,
+        color: Colors.white,
+      );
+
   @override
   Widget build(BuildContext context) {
     List<TextStyle> textStyles = [
       h1Style(),
       h2Style(),
       h3Style(),
+      h4Style(),
     ];
 
     if (index == null) {
