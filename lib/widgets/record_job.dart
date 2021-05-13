@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:ungpeaofficer/models/informaiont_model.dart';
 import 'package:ungpeaofficer/models/job_model.dart';
+import 'package:ungpeaofficer/states/record_new_job.dart';
 import 'package:ungpeaofficer/widgets/show_progress.dart';
 import 'package:ungpeaofficer/widgets/show_title.dart';
 
@@ -69,6 +70,13 @@ class _RecordJobState extends State<RecordJob> {
           : ListView.builder(
               itemCount: jobModelsForName.length,
               itemBuilder: (context, index) => GestureDetector(
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        RecordNewJob(jobModel: jobModelsForName[index]),
+                  ),
+                ),
                 child: Card(
                   color: index % 2 == 0
                       ? Colors.grey.shade400

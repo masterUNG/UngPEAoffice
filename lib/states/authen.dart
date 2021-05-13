@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:ungpeaofficer/models/informaiont_model.dart';
 import 'package:ungpeaofficer/models/user_model.dart';
 import 'package:ungpeaofficer/utility/dialog.dart';
 import 'package:ungpeaofficer/utility/my_constant.dart';
@@ -77,11 +78,34 @@ class _AuthenState extends State<Authen> {
             if (password == model.password) {
               print('### Remember $remember');
               if (remember) {
-                SharedPreferences preferences =
-                    await SharedPreferences.getInstance();
-                preferences.setString('name', model.name);
-                preferences.setString('emyloyedid', model.employedid);
-                routeToService();
+                //Temporaly wait Real API Login
+                String path =
+                    'https://wesafe.pea.co.th/webservicejson/api/values/job/${model.employedid}';
+                print('##### path ==>> $path');
+                await Dio().get(path).then((value) async {
+                  print('###### value ==>> $value');
+
+                  for (var item in value.data) {
+                    InformationModel informationModel =
+                        InformationModel.fromJson(item);
+
+                    SharedPreferences preferences =
+                        await SharedPreferences.getInstance();
+                    preferences.setString(
+                        MyConstant.keyFIRSTNAME, informationModel.fIRSTNAME);
+                    preferences.setString(
+                        MyConstant.keyLASTNAME, informationModel.lASTNAME);
+                    preferences.setString(
+                        MyConstant.keyEmployedid, informationModel.eMPLOYEEID);
+                    preferences.setString(
+                        MyConstant.keyDEPTNAME, informationModel.dEPTNAME);
+                    preferences.setString(
+                        MyConstant.keyREGIONCODE, informationModel.rEGIONCODE);
+                    preferences.setString(
+                        MyConstant.keyTEAM, informationModel.tEAM);
+                    routeToService();
+                  }
+                });
               } else {
                 routeToService();
               }
