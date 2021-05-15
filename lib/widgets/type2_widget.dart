@@ -5,7 +5,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:ungpeaofficer/models/record_model.dart';
+import 'package:ungpeaofficer/models/type2_sqlite_model.dart';
 import 'package:ungpeaofficer/utility/dialog.dart';
+import 'package:ungpeaofficer/utility/sqlite_helper_type2.dart';
 import 'package:ungpeaofficer/widgets/show_icon_image.dart';
 import 'package:ungpeaofficer/widgets/show_title.dart';
 
@@ -113,27 +115,40 @@ class _Type2WidgetState extends State<Type2Widget> {
     );
   }
 
-  ElevatedButton buildUpload() {
-    return ElevatedButton(
-      style: ElevatedButton.styleFrom(primary: Colors.lightBlue),
-      onPressed: () {
-        if (files[0] == null) {
-          normalDialog(context, 'รูปแรกต้องมี', 'ต้องมีรูปแรก');
-        } else {
-          List<String> base64Strs = [];
-          for (var item in files) {
-            if (item != null) {
-              List<int> imageBytes = Io.File(item.path).readAsBytesSync();
-              String base64Str = base64Encode(imageBytes);
-              print('## base64 ==>> $base64Str');
-              // test64Dialog(context, base64Str);
-              base64Strs.add(base64Str);
+  Widget buildUpload() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(primary: Colors.lightBlue),
+          onPressed: () {
+            if (files[0] == null) {
+              normalDialog(context, 'รูปแรกต้องมี', 'ต้องมีรูปแรก');
+            } else {
+              List<String> base64Strs = [];
+              for (var item in files) {
+                if (item != null) {
+                  List<int> imageBytes = Io.File(item.path).readAsBytesSync();
+                  String base64Str = base64Encode(imageBytes);
+                  print('## base64 ==>> $base64Str');
+                  // test64Dialog(context, base64Str);
+                  base64Strs.add(base64Str);
+                }
+              }
+              print('### base64Strs.length ==>> ${base64Strs.length}');
+              Type2SQLiteModel model = Type2SQLiteModel(
+                  iddoc: idDoc, namejob: nameJob, image: base64Strs.toString());
+              SQLiteHelperType2().insertDatabase(model).then((value) =>
+                  print('### from Type2Widget insert SQLite Success ####'));
             }
-          }
-          print('### base64Strs.length ==>> ${base64Strs.length}');
-        }
-      },
-      child: Text('Upload Data'),
+          },
+          child: Text('Upload Data'),
+        ),
+        TextButton(
+          onPressed: () =>Navigator.pushNamed(context, '/showSQLite'),
+          child: Text('Show SQLite'),
+        ),
+      ],
     );
   }
 }

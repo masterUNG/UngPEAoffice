@@ -1,4 +1,6 @@
 import 'package:dio/dio.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ungpeaofficer/models/informaiont_model.dart';
@@ -7,6 +9,7 @@ import 'package:ungpeaofficer/widgets/check_job.dart';
 import 'package:ungpeaofficer/widgets/history.dart';
 import 'package:ungpeaofficer/widgets/record_job.dart';
 import 'package:ungpeaofficer/widgets/show_man.dart';
+import 'package:ungpeaofficer/widgets/show_map.dart';
 import 'package:ungpeaofficer/widgets/show_progress.dart';
 import 'package:ungpeaofficer/widgets/show_title.dart';
 
@@ -23,6 +26,7 @@ class _MyServiceState extends State<MyService> {
     'บันทึกงานใหม่',
     'ประวัติการทำงาน',
     'ตรวจสอบสถานะงาน',
+    'แสดง พิกัด แผนที่'
   ];
 
   @override
@@ -30,6 +34,16 @@ class _MyServiceState extends State<MyService> {
     // TODO: implement initState
     super.initState();
     readData();
+    findToken();
+  }
+
+  Future<Null> findToken() async {
+    await Firebase.initializeApp().then((value) async {
+      FirebaseMessaging messaging = FirebaseMessaging.instance;
+      await messaging
+          .getToken()
+          .then((value) => print('#### token ===>> $value'));
+    });
   }
 
   Future<Null> readData() async {
@@ -54,6 +68,10 @@ class _MyServiceState extends State<MyService> {
           widgets.add(CheckJob(
             employedid: employedid,
           ));
+
+          widgets.add(
+            ShowMap(),
+          );
         });
         // print('### name Login = ${informationModel.fIRSTNAME}');
       }
@@ -80,6 +98,7 @@ class _MyServiceState extends State<MyService> {
                   buildMenuRecordJob(context),
                   buildMenuHistory(context),
                   buildMenuCheckJob(context),
+                  buildMenuShowLocation(context),
                 ],
               ),
               buildSignOut(),
@@ -144,6 +163,27 @@ class _MyServiceState extends State<MyService> {
       onTap: () {
         setState(() {
           index = 2;
+        });
+        Navigator.pop(context);
+      },
+    );
+  }
+
+  ListTile buildMenuShowLocation(BuildContext context) {
+    return ListTile(
+      leading: Icon(
+        Icons.map,
+        size: 36,
+        color: MyConstant.primart,
+      ),
+      title: ShowTitle(
+        title: 'Show Location',
+        index: 1,
+      ),
+      subtitle: ShowTitle(title: 'แสดง พิกัดปัจุบัน'),
+      onTap: () {
+        setState(() {
+          index = 3;
         });
         Navigator.pop(context);
       },

@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ungpeaofficer/states/authen.dart';
 import 'package:ungpeaofficer/states/my_service.dart';
+import 'package:ungpeaofficer/states/show_sqlite.dart';
 
 final Map<String, WidgetBuilder> map = {
   '/authen': (BuildContext context) => Authen(),
   '/myService': (BuildContext context) => MyService(),
+  '/showSQLite':(BuildContext context)=>ShowSQLite(),
 };
 
 String initialRoute;

@@ -37,8 +37,8 @@ android {
         applicationId "com.flutterthailand.ungpeaofficer"
         minSdkVersion 16
         targetSdkVersion 30
-        versionCode flutterVersionCode.toInteger()
-        versionName flutterVersionName
+        versionCode 1
+        versionName '1.0.0'
     }
 
     buildTypes {
@@ -57,3 +57,4 @@ flutter {
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
+apply plugin: 'com.google.gms.google-services'
